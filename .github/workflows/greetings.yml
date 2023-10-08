@@ -29,4 +29,5 @@ jobs:
         run: |
           num_issues="${{ env.NUM_ISSUES }}"
           num_prs="${{ env.NUM_PRS }}"
-          echo "Hey ${{ github.event.sender.login }} welcome! You have opened $num_issues issues and created $num_prs pull requests. Keep up the good work! 🥳"
+          pr-message: "Hey ${{ github.event.sender.login }} welcome! You have opened $num_issues issues and created $num_prs pull requests. Keep up the good work! 🥳"
+          issue-message: "Hey ${{ github.event.sender.login }} welcome! You have opened $num_issues issues and created $num_prs pull requests. Keep up the good work! 🥳"
