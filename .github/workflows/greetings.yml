@@ -7,21 +7,16 @@ on:
 jobs:
   greeting:
     runs-on: ubuntu-latest
+    env:
+      EVENT_TYPE: ${{ github.event_name }}
+      USERNAME: ${{ github.event.sender.login }}
     steps:
-      - name: Get Event Type
-        id: get_event_type
-        run: echo "::set-output name=event_type::${{ github.event_name }}"
-      
-      - name: Get Username
-        id: get_username
-        run: echo "::set-output name=username::${{ github.event.sender.login }}"
-
       - name: Greet User
         run: |
-          if [ "${{ steps.get_event_type.outputs.event_type }}" == "pull_request" ]; then
-            echo "Hey ${{ steps.get_username.outputs.username }} welcome, congratulations on your first pull request in our repo🥳"
-          elif [ "${{ steps.get_event_type.outputs.event_type }}" == "issues" ]; then
-            echo "Hey ${{ steps.get_username.outputs.username }} welcome, congratulations on your first issue in our repo🥳"
+          if [ "$EVENT_TYPE" == "pull_request" ]; then
+            echo "Hey $USERNAME welcome, congratulations on your pull request🥳"
+          elif [ "$EVENT_TYPE" == "issues" ]; then
+            echo "Hey $USERNAME welcome, congratulations on your issue🥳"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
