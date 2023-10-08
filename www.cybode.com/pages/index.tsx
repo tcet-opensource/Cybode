@@ -111,38 +111,26 @@ export default function Home() {
             <h1 className="text-5xl font-bold mb-2">Features</h1>
             <p className="text-base">
               {" "}
-              <span className="font-bold text-lg"> 📰 Sentiment Analysis </span>
-              : Measures the sentiment of entities mentioned in articles,
-              providing a balanced view of the information being presented.
+              <span className="font-bold text-lg"> 📰 Databind </span>
+              : a lookup tool that uses OSINT to get user data on different parameters like username, email, name. etc
             </p>
             <p>
               {" "}
               <span className="font-bold text-lg">
                 {" "}
-                ⚠️ Unrevealing Misinformation:
+                ⚠️ Detectron:
               </span>{" "}
-              Helping users identify unreliable sources by detecting and
-              flagging misleading or inaccurate information.
+               a detection tool that will fetch data from news url and give a detailed overview of it with summary, visulaization, analysis, detect propoganda, hate speech, etc.
             </p>
             <p>
               {" "}
               <span className="font-bold text-lg">
                 {" "}
-                🤖 Bot Activity Detection:{" "}
+                🤖 Demystify:{" "}
               </span>{" "}
-              Identifies coordinated clusters of bots and automatons, providing
-              insight into potential manipulation and disinformation campaigns.
+              To analyse the patterns/trends of social media and classify them according to some predefined fields like - most active, most used, hate speech,etc. To understand the social activity and decode the patterns behind them. Also, the individual can be identified with the most hate speech used related to any topic.
             </p>
-            <p>
-              {" "}
-              <span className="font-bold text-lg">
-                {" "}
-                📱 Social Media Presence:{" "}
-              </span>{" "}
-              Explores the presence of the same information present on the
-              social media like twitter and other metadata associated with it
-              like like, share, top user retweeting it the most, etc.
-            </p>
+           
           </div>
         </article>
       </main>
