@@ -2,21 +2,32 @@ name: Greetings
 
 on:
   pull_request_target:
+    types:
+      - opened
+      - synchronize
   issues:
-  
+    types:
+      - opened
+
 jobs:
   greeting:
     runs-on: ubuntu-latest
-    env:
-      EVENT_TYPE: ${{ github.event_name }}
-      USERNAME: ${{ github.event.sender.login }}
     steps:
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+        
+      - name: Get User Information
+        id: user_info
+        run: |
+          echo "::set-env name=NUM_ISSUES::$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' 'https://api.github.com/users/${{ github.event.sender.login }}' | jq -r '.public_repos')"
+          echo "::set-env name=NUM_PRS::$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' 'https://api.github.com/users/${{ github.event.sender.login }}' | jq -r '.public_gists')"
+          
       - name: Greet User
         run: |
-          if [ "$EVENT_TYPE" == "pull_request" ]; then
-            echo "Hey $USERNAME welcome, congratulations on your pull request🥳"
-          elif [ "$EVENT_TYPE" == "issues" ]; then
-            echo "Hey $USERNAME welcome, congratulations on your issue🥳"
+          num_issues="${{ env.NUM_ISSUES }}"
+          num_prs="${{ env.NUM_PRS }}"
+          echo "Hey ${{ github.event.sender.login }} welcome! You have opened $num_issues issues and created $num_prs pull requests. Keep up the good work! 🥳"
+
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
