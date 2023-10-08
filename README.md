@@ -118,7 +118,7 @@ Tada project is up and running!
 
 8. Push your changes: Once you have committed your changes, push them to your forked repository on GitHub using the git push command.
 
-9. Open a pull request: Finally, open a pull request to merge your changes into the main branch of the repository. Be sure to describe your changes and explain why they are necessary or beneficial. Note that the project maintainers may request changes or reject your pull request, so your first pull request is not guaranteed to be accepted.
+9. Open a pull request: Finally, open a pull request to merge your changes into the staging branch of the repository. Be sure to describe your changes and explain why they are necessary or beneficial. Note that the project maintainers may request changes or reject your pull request, so your first pull request is not guaranteed to be accepted.
 
 > It's also worth noting that you should communicate with the project maintainers and other contributors to ensure that your changes align with the project's goals and direction.
 
