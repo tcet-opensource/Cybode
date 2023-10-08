@@ -91,7 +91,7 @@ Now install the dependencies
 To start working on this project first you need to create `.env` file. This .env file will contain:
 
 
-`Huggingface API key` which you will get by creating an account on ![huggingface](https://huggingface.co/)
+`Huggingface API key` which you will get by creating an account on [huggingface](https://huggingface.co/)
 
 Tada project is up and running!
 
