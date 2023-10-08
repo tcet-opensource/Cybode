@@ -1,7 +1,7 @@
 from io import BytesIO
 from flask import Flask, jsonify
 import os
-from instagramy import *
+from config import Config
 # import tweepy
 import snscrape.modules.instagram as snsinsta
 from dotenv import load_dotenv
@@ -187,45 +187,6 @@ def sentiment_article():
 
 
 
-@app.route('/article-sentiment')
-def articleSentiment():
-    url = request.args['url']
-
-    # url = 'https://blogs.jayeshvp24.dev/dive-into-web-design'
-    goose = Goose()
-    articles = goose.extract(url)
-    sentence = articles.cleaned_text[0:500]
-    print(sentence)
-    output=query_hate({
-	"inputs": str(sentence)})
-    # print(output[0][0])
-    result = {}
-    for data in output[0]:
-        if data['label'] == "LABEL_0":
-            result["ACCEPTABLE"] = data['score']
-        elif data['label'] == "LABEL_1":
-            result["INAPPROAPRIATE"] = data['score']
-        elif data['label'] == "LABEL_2":
-            result["OFFENSIVE"] = data['score']
-        elif data['label'] == "LABEL_3":
-            result["VIOLENT"] = data['score']
-    labels = list(result.keys())
-    values = list(result.values())
-
-    # # Use `hole` to create a donut-like pie chart
-    # fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.5)])
-    # # fig.show()
-    # graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    # print(graphJSON)
-    # print(type(fig))
-    # return graphJSON
-    return jsonify({"labels": labels, "values": values})
-            
-
-
-
-
-
 @app.route('/summary')
 def summary():
     try:
@@ -397,8 +358,16 @@ def botActivity():
         flag = True
     return jsonify({"bots":list(set(finalusername)),"flag":flag})
 #baseline model
+
+    
+from routes.news.articlesentiment import get_article_sentiment
+app.register_blueprint(get_article_sentiment)
+
+app.config.from_object(Config)
+
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 import requests
 
@@ -428,3 +397,4 @@ def tweets():
     response = requests.request("GET", url, data=payload, headers=headers, params=querystring)
 
     print(response.text)
+    
