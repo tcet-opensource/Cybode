@@ -19,15 +19,9 @@ jobs:
       - name: Get User Information
         id: user_info
         run: |
-          echo "::set-env name=NUM_ISSUES::$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' 'https://api.github.com/users/${{ github.event.sender.login }}' | jq -r '.public_repos')"
-          echo "::set-env name=NUM_PRS::$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' 'https://api.github.com/users/${{ github.event.sender.login }}' | jq -r '.public_gists')"
+          echo "NUM_ISSUES=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' 'https://api.github.com/users/${{ github.event.sender.login }}' | jq -r '.public_repos')" >> $GITHUB_ENV
+          echo "NUM_PRS=$(curl -s -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' 'https://api.github.com/users/${{ github.event.sender.login }}' | jq -r '.public_gists')" >> $GITHUB_ENV
           
       - name: Greet User
         run: |
-          num_issues="${{ env.NUM_ISSUES }}"
-          num_prs="${{ env.NUM_PRS }}"
-          echo "Hey ${{ github.event.sender.login }} welcome! You have opened $num_issues issues and created $num_prs pull requests. Keep up the good work! 🥳"
-
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          echo "Hey ${{ github.event.sender.login }} welcome! You have opened $NUM_ISSUES issues and created $NUM_PRS pull requests. Keep up the good work! 🥳"
