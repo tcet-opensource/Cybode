@@ -2,7 +2,6 @@ from io import BytesIO
 from flask import Flask, jsonify
 import os
 from config import Config
-# import tweepy
 import snscrape.modules.instagram as snsinsta
 from dotenv import load_dotenv
 from flask import request,jsonify
@@ -43,6 +42,7 @@ print(os.getenv("HUGGINGFACE_API"))
 def hello_geek():
     return '<h1>Hello from Flask & Docker</h2>'
 
+#get tweets associated with topic of the news article [status - 405]
 @app.route('/twitter')
 def twitter():
     query = request.args['query']
@@ -54,18 +54,7 @@ def twitter():
     global queryString
     print("Url: Twitter, data: ", twitterData)
     print("Url: Twitter, query: ", queryString)
-    # if twitterData is None:
-    #     twitterData = snstwitter.TwitterSearchScraper(query).get_items()
-    #     queryString = query
-    # else:
-    #     if queryString != query:
-    #         twitterData = snstwitter.TwitterSearchScraper(query).get_items()
-    #         queryString = query
-    #     else:
-    #         print(vars(twitterData)) 
-    #         print("not scraping again")
-    # twitter_scraper = TwitterSearchScraper(query)
-    # twitterData = list(twitter_scraper.get_items(TwitterSearchScraperMode.TOP))
+
     twitterData = snstwitter.TwitterSearchScraper(query).get_items()
         
     for tweet in twitterData: 
@@ -86,8 +75,8 @@ def twitter():
     print(tweets)
     return jsonify({'result':tweets})
 
-
-@app.route('/xyz')
+#just a random route lol
+@app.route('/elonchutiya69')
 def xyz():
     query = request.args['query']
     tweets = []
@@ -96,14 +85,14 @@ def xyz():
     return tweets
 
 
-
+#API resources for models
 API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
 headers = {"Authorization": "Bearer " +  os.getenv('HUGGINGFACE_API') }
 API_URL_PROP = "https://api-inference.huggingface.co/models/valurank/distilroberta-propaganda-2class"
 API_URL_HATE = "https://api-inference.huggingface.co/models/IMSyPP/hate_speech_en"
 
 
-
+#payloads are here
 def query(payload):
 	response = requests.post(API_URL, headers=headers, json=payload)
 	return response.json()
@@ -117,7 +106,7 @@ def query_hate(payload):
 	return response.json()
 
 
-
+#get twitter sentiments associated with the news article [status - 404]
 @app.route('/sentiment')
 def sentiment():
     query = request.args['query']
@@ -164,29 +153,9 @@ def sentiment():
     values = list(senti.values())
         
     return {"labels":labels, "values":values}
-            
-@app.route('/sentiment_article')
-def sentiment_article():
-    senti=[]
-    url = 'https://blogs.jayeshvp24.dev/dive-into-web-design'
-    goose = Goose()
-    articles = goose.extract(url)
-    sentence1 = articles.cleaned_text
-    sid_obj = SentimentIntensityAnalyzer()
-    sentiment_dict = sid_obj.polarity_scores([sentence1])
-    print(sentiment_dict['neg']*100, "% Negative")
-    print(sentiment_dict['pos']*100, "% Positive")
-    print("Review Overall Analysis", end = " ") 
-    if sentiment_dict['compound'] >= 0.05 :
-        senti.append("Positive")
-    elif sentiment_dict['compound'] <= -0.05 :
-        senti.append("Negative")
-    else :
-        senti.append("Neutral")
-    return jsonify({"result":senti})
 
 
-
+#summarize the news article [status - 200]
 @app.route('/summary')
 def summary():
     try:
@@ -203,7 +172,8 @@ def summary():
 
     return jsonify({"result": output[0]['summary_text']})
 
-@app.route('/cloud2')
+#highlight key segments of the news article [status - 200]
+@app.route('/wordcloud')
 def plotly_wordcloud2():
     url = request.args['url']
     goose = Goose()
@@ -215,32 +185,10 @@ def plotly_wordcloud2():
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis('off')
     plt.margins(x=0, y=0)
-    
-    # plt.show()
-    # img = BytesIO()
 
-    # plt.savefig("./wordcloud.png", format='png')
-    # plt.imsave("./wordcloud.png", format='png')
-    # img.seek(0)
-    # # nimg = Image.frombytes("RGBA", (128, 128), img, 'raw')
-    # nimg = Image.frombuffer(img)
-    # nimg.save("./wordcloud.png")
-    # plot_url = base64.b64encode(img.getvalue()).decode('utf8')
     return send_file("./wordcloud.png", mimetype='image/png')
-    # return render_template('plot.html', plot_url=plot_url)
-
-# @app.route('/cloud')
-# def plotly_wordcloud():
-#     url = 'https://blogs.jayeshvp24.dev/dive-into-web-design'
-#     goose = Goose()
-#     articles = goose.extract(url)
-#     text = query({
-# 	"inputs":  articles.cleaned_text
-#     })
-#     wc = WordCloud(stopwords = set(STOPWORDS),
-#                    max_words = 200,
-#                    max_font_size = 100)
-#     wc.generate(text[0]['summary_text'])
+    
+#ML model for binary classification for propaganda of the news article [status - 200]
 @app.route('/propaganda')
 def propaganda():
     url = request.args['url']
@@ -254,69 +202,8 @@ def propaganda():
     no = 1 - yes
     return jsonify({"yes": yes, "no": no})
 
-@app.route("/instagram")
 
-
-# @app.route('/cloud')
-# def plotly_wordcloud():
-#     url = request.args['url']
-#     goose = Goose()
-#     articles = goose.extract(url)
-#     text = query({
-# 	"inputs":  articles.cleaned_text
-#     })
-#     wc = WordCloud(stopwords = set(STOPWORDS),
-#                    max_words = 200,
-#                    max_font_size = 100)
-#     wc.generate(text[0]['summary_text'])
-    
-#     word_list=[]
-#     freq_list=[]
-#     fontsize_list=[]
-#     position_list=[]
-#     orientation_list=[]
-#     color_list=[]
-
-#     for (word, freq), fontsize, position, orientation, color in wc.layout_:
-#         word_list.append(word)
-#         freq_list.append(freq)
-#         fontsize_list.append(fontsize)
-#         position_list.append(position)
-#         orientation_list.append(orientation)
-#         color_list.append(color)
-        
-#     # get the positions
-#     x=[]
-#     y=[]
-#     for i in position_list:
-#         x.append(i[0])
-#         y.append(i[1])
-            
-#     # get the relative occurence frequencies
-#     new_freq_list = []
-#     for i in freq_list:
-#         new_freq_list.append(i*100)
-#     new_freq_list
-    
-#     trace = go.Scatter(x=x, 
-#                        y=y, 
-#                        textfont = dict(size=new_freq_list,
-#                                        color=color_list),
-#                        hoverinfo='text',
-#                        hovertext=['{0}{1}'.format(w, f) for w, f in zip(word_list, freq_list)],
-#                        mode='text',  
-#                        text=word_list
-#                       )
-    
-#     layout = go.Layout({'xaxis': {'showgrid': False, 'showticklabels': False, 'zeroline': False},
-#                         'yaxis': {'showgrid': False, 'showticklabels': False, 'zeroline': False}})
-    
-#     fig = go.Figure(data=[trace], layout=layout)
-#     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-#     print(graphJSON)
-#     print(type(fig))
-#     return graphJSON
-
+#check the authentic source of the news article [status - 200]
 @app.route('/authenticity')
 def auth():
     url = request.args['url']
@@ -331,6 +218,7 @@ def auth():
 
     return { "authentic": True }
 
+#detect twitter bot activity of the news article [status - 500]
 @app.route('/bot-activity')
 def botActivity():
     url = request.args['url']
@@ -357,44 +245,14 @@ def botActivity():
     if(len(finalusername) > 3):
         flag = True
     return jsonify({"bots":list(set(finalusername)),"flag":flag})
-#baseline model
 
-    
+#register blueprints for routes here look at the example below for article sentiment route
 from routes.news.articlesentiment import get_article_sentiment
 app.register_blueprint(get_article_sentiment)
 
+#to resolve circular imports
 app.config.from_object(Config)
 
 if __name__ == '__main__':
     app.run(debug=True)
 
-
-import requests
-
-@app.route('/gettweets')
-def tweets():
-    url = "https://cdn.syndication.twimg.com/tweet-result"
-
-    querystring = {"id":"1652193613223436289","lang":"en"}
-
-    payload = ""
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/114.0",
-        "Accept": "*/*",
-        "Accept-Language": "en-US,en;q=0.5",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Origin": "https://platform.twitter.com",
-        "Connection": "keep-alive",
-        "Referer": "https://platform.twitter.com/",
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "cross-site",
-        "Pragma": "no-cache",
-        "Cache-Control": "no-cache",
-        "TE": "trailers"
-    }
-
-    response = requests.request("GET", url, data=payload, headers=headers, params=querystring)
-
-    print(response.text)
-    

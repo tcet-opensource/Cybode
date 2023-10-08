@@ -4,6 +4,7 @@ import os
 from goose3 import Goose
 import requests
 
+#create blueprint
 get_article_sentiment = Blueprint('get_article_sentiment', __name__)
 
 from app import app
@@ -16,6 +17,7 @@ def query_hate(payload):
 	response = requests.post(API_URL_HATE, headers=headers, json=payload)
 	return response.json()
 
+#route creation
 @get_article_sentiment.route("/article-sentiment", methods=["GET"])
 def articleSentiment():
     url = request.args['url']
