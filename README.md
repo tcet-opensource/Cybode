@@ -25,7 +25,7 @@ Read our [workflow](https://opensource.tcetmumbai.in/docs/resources/workflows/ex
 
 ## Dependencies
 
-All the dependencies used in this project will be listed in the `package.json` file from the root directory.
+All the dependencies used in this project will be listed in the `package.json` file and `requirements.txt` file.
 
 ## Installation
 
@@ -92,6 +92,10 @@ To start working on this project first you need to create `.env` file. This .env
 
 
 `Huggingface API key` which you will get by creating an account on [huggingface](https://huggingface.co/)
+
+```bash
+   HUGGINGFACE_API=hf_your_key
+```
 
 Tada project is up and running!
 
