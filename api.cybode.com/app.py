@@ -250,6 +250,9 @@ def botActivity():
 from routes.news.articlesentiment import get_article_sentiment
 app.register_blueprint(get_article_sentiment)
 
+from routes.social.youtubedata import get_yt_comment
+app.register_blueprint(get_yt_comment)
+
 #to resolve circular imports
 app.config.from_object(Config)
 
