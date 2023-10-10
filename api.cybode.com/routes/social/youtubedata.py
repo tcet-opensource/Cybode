@@ -13,7 +13,7 @@ youtube = build('youtube', 'v3', developerKey=yt_api) # Generate API KEY yt_api 
 
 get_yt_comment = Blueprint('get_yt_comment', __name__)
 
-@get_yt_comment.route('/video/<video_id>')
+@get_yt_comment.route('/get-youtube-data/<video_id>')
 def get_yt_comments(video_id):
 
   res = youtube.commentThreads().list(
