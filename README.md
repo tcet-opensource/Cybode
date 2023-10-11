@@ -64,6 +64,7 @@ Now setup your backend server
 It is suggested to create a virtualenv
 
 ```bash
+  cd api.cybode.com
   pip install virtualenv
   virtualenv venv
 ```
