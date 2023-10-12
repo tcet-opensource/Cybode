@@ -2,7 +2,7 @@ from io import BytesIO
 from flask import Flask, jsonify
 import os
 from config import Config
-import snscrape.modules.instagram as snsinsta
+# import snscrape.modules.instagram as snsinsta
 from dotenv import load_dotenv
 from flask import request,jsonify
 import snscrape.modules.twitter as snstwitter
@@ -188,20 +188,6 @@ def plotly_wordcloud2():
 
     return send_file("./wordcloud.png", mimetype='image/png')
     
-#ML model for binary classification for propaganda of the news article [status - 200]
-@app.route('/propaganda')
-def propaganda():
-    url = request.args['url']
-    goose = Goose()
-    articles = goose.extract(url)
-    output = queryprop({
-	"inputs":  articles.cleaned_text[0:600]
-    })
-    
-    yes = output[0][0]['score']
-    no = 1 - yes
-    return jsonify({"yes": yes, "no": no})
-
 
 #check the authentic source of the news article [status - 200]
 @app.route('/authenticity')
@@ -252,6 +238,9 @@ app.register_blueprint(get_article_sentiment)
 
 from routes.social.youtubedata import get_yt_comment
 app.register_blueprint(get_yt_comment)
+
+from routes.news.propaganda import get_propaganda
+app.register_blueprint(get_propaganda)
 
 #to resolve circular imports
 app.config.from_object(Config)

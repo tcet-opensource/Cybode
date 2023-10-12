@@ -2,7 +2,7 @@ from flask import request, jsonify, Blueprint
 from dotenv import load_dotenv
 import os
 from goose3 import Goose
-import requests
+import requests 
 
 #create blueprint
 get_article_sentiment = Blueprint('get_article_sentiment', __name__)
