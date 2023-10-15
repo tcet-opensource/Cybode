@@ -1,5 +1,8 @@
+from flask import app, jsonify, request, Blueprint
 from goose3 import Goose
 import requests
+from app import app
+from app import headers
 
 API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
 
