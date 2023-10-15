@@ -155,22 +155,8 @@ def sentiment():
     return {"labels":labels, "values":values}
 
 
-#summarize the news article [status - 200]
-@app.route('/summary')
-def summary():
-    try:
 
-        url = request.args['url']
-        goose = Goose()
-        articles = goose.extract(url)
-        output = query({
-        "inputs":  articles.cleaned_text
-        })
-        print(output)
-    except:
-        return "Please put the relevant text article"
 
-    return jsonify({"result": output[0]['summary_text']})
 
 #highlight key segments of the news article [status - 200]
 @app.route('/wordcloud')
@@ -241,6 +227,9 @@ app.register_blueprint(get_yt_comment)
 
 from routes.news.propaganda import get_propaganda
 app.register_blueprint(get_propaganda)
+
+from routes.news.summary import get_summary
+app.register_blueprint(get_summary)
 
 #to resolve circular imports
 app.config.from_object(Config)
