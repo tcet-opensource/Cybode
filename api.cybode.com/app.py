@@ -159,21 +159,7 @@ def sentiment():
 
 
 #highlight key segments of the news article [status - 200]
-@app.route('/wordcloud')
-def plotly_wordcloud2():
-    url = request.args['url']
-    goose = Goose()
-    articles = goose.extract(url)
-    text = articles.cleaned_text
-    wordcloud = WordCloud(width=1280, height=853, margin=0,
-                      colormap='Blues').generate(text)
-    wordcloud.to_file("./wordcloud.png")
-    plt.imshow(wordcloud, interpolation='bilinear')
-    plt.axis('off')
-    plt.margins(x=0, y=0)
 
-    return send_file("./wordcloud.png", mimetype='image/png')
-    
 
 #check the authentic source of the news article [status - 200]
 @app.route('/authenticity')
@@ -230,6 +216,9 @@ app.register_blueprint(get_propaganda)
 
 from routes.news.summary import get_summary
 app.register_blueprint(get_summary)
+
+from routes.news.summary import get_wordcloud
+app.register_blueprint(get_wordcloud)
 
 #to resolve circular imports
 app.config.from_object(Config)
