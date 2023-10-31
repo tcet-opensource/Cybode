@@ -24,9 +24,11 @@ from flask import send_file
 import datetime
 import plotly.express as px
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from api.cybode.com.routes.news.authenticity import auth_blueprint 
 
 
 app = Flask(__name__)
+app.register_blueprint(auth_blueprint)
 
 twitterData = None
 queryString = None
@@ -162,19 +164,19 @@ def sentiment():
 
 
 #check the authentic source of the news article [status - 200]
-@app.route('/authenticity')
-def auth():
-    url = request.args['url']
-    lis = []
-    df = pd.read_csv('blacklist.csv')
-    for i in range(len(df)):
-        lis.append(df.loc[i, "MBFC"])
+# @app.route('/authenticity')
+# def auth():
+#     url = request.args['url']
+#     lis = []
+#     df = pd.read_csv('blacklist.csv')
+#     for i in range(len(df)):
+#         lis.append(df.loc[i, "MBFC"])
 
-    for l in lis:
-        if(url.__contains__(l)):
-            return {"authentic":False}
+#     for l in lis:
+#         if(url.__contains__(l)):
+#             return {"authentic":False}
 
-    return { "authentic": True }
+#     return { "authentic": True }
 
 #detect twitter bot activity of the news article [status - 500]
 @app.route('/bot-activity')
