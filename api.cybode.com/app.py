@@ -2,7 +2,7 @@ from io import BytesIO
 from flask import Flask, jsonify
 import os
 from config import Config
-import snscrape.modules.instagram as snsinsta
+# import snscrape.modules.instagram as snsinsta
 from dotenv import load_dotenv
 from flask import request,jsonify
 import snscrape.modules.twitter as snstwitter
@@ -24,9 +24,11 @@ from flask import send_file
 import datetime
 import plotly.express as px
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from api.cybode.com.routes.news.authenticity import auth_blueprint 
 
 
 app = Flask(__name__)
+app.register_blueprint(auth_blueprint)
 
 twitterData = None
 queryString = None
@@ -188,35 +190,21 @@ def plotly_wordcloud2():
 
     return send_file("./wordcloud.png", mimetype='image/png')
     
-#ML model for binary classification for propaganda of the news article [status - 200]
-@app.route('/propaganda')
-def propaganda():
-    url = request.args['url']
-    goose = Goose()
-    articles = goose.extract(url)
-    output = queryprop({
-	"inputs":  articles.cleaned_text[0:600]
-    })
-    
-    yes = output[0][0]['score']
-    no = 1 - yes
-    return jsonify({"yes": yes, "no": no})
-
 
 #check the authentic source of the news article [status - 200]
-@app.route('/authenticity')
-def auth():
-    url = request.args['url']
-    lis = []
-    df = pd.read_csv('blacklist.csv')
-    for i in range(len(df)):
-        lis.append(df.loc[i, "MBFC"])
+# @app.route('/authenticity')
+# def auth():
+#     url = request.args['url']
+#     lis = []
+#     df = pd.read_csv('blacklist.csv')
+#     for i in range(len(df)):
+#         lis.append(df.loc[i, "MBFC"])
 
-    for l in lis:
-        if(url.__contains__(l)):
-            return {"authentic":False}
+#     for l in lis:
+#         if(url.__contains__(l)):
+#             return {"authentic":False}
 
-    return { "authentic": True }
+#     return { "authentic": True }
 
 #detect twitter bot activity of the news article [status - 500]
 @app.route('/bot-activity')
@@ -252,6 +240,9 @@ app.register_blueprint(get_article_sentiment)
 
 from routes.social.youtubedata import get_yt_comment
 app.register_blueprint(get_yt_comment)
+
+from routes.news.propaganda import get_propaganda
+app.register_blueprint(get_propaganda)
 
 #to resolve circular imports
 app.config.from_object(Config)
